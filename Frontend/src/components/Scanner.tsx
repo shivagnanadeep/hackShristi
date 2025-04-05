@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Upload, Search, Download } from 'lucide-react';
+import { Upload, Download } from 'lucide-react';
 import useStore from '../store/useStore';
 import { calculateWordFrequency, cosineSimilarity } from '../utils/textAnalysis';
 
