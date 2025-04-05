@@ -1,4 +1,4 @@
-POST http://localhost:3000/register/
+POST http://localhost:3001/register/
 Content-Type:application/json
 
 {
@@ -8,11 +8,27 @@ Content-Type:application/json
 }
 
 ###
-
-POST http://localhost:3000/login/
+ 
+POST http://localhost:3001/login/
 Content-Type:application/json
 
 {
-  "email":"subhamdas@gmail.com",
+  "email":"shiva@gmail.com",
   "password":"12345678"
+}
+
+###
+
+GET http://localhost:3001/
+Authorization:bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkpvZUJpZGVuIiwiaWF0IjoxNzI3NjI1OTMxfQ.OMBBEI4OBYy1I1sEMEOeYy2cidwioFWfCqekIVLOS7M
+
+###
+
+POST http://localhost:3001/process
+Authorization:bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkpvZUJpZGVuIiwiaWF0IjoxNzI3NjI1OTMxfQ.OMBBEI4OBYy1I1sEMEOeYy2cidwioFWfCqekIVLOS7M
+Content-Type: application/json
+
+{
+    "filename":"test",
+    "content": "Over the years, countless talesm to reimagine stories in unexpected ways."
 }
