@@ -24,6 +24,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleForm }) => {
 		console.log(response, data);
 	};
 
+<<<<<<< HEAD
 	return (
 		<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50 py-12 px-4 sm:px-6 lg:px-8">
 			<div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
@@ -36,6 +37,18 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleForm }) => {
 						Sign in to your account to continue
 					</p>
 				</div>
+=======
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-200 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
+        <div className="text-center">
+          <LogIn className="mx-auto h-12 w-12 text-blue-600" />
+          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">Welcome back</h2>
+          <p className="mt-2 text-sm text-gray-600">
+            Sign in to your account to continue
+          </p>
+        </div>
+>>>>>>> f9f2070f10df652675658e6e678618a47407c73b
 
 				{/* {error && (
 					<div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md">

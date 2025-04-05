@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Upload, Search, Download } from 'lucide-react';
+import { Upload, Download } from 'lucide-react';
 import useStore from '../store/useStore';
 import { calculateWordFrequency, cosineSimilarity } from '../utils/textAnalysis';
 
@@ -7,10 +7,17 @@ const Scanner: React.FC = () => {
   const { currentUser, addDocument, addScanResult, incrementScansToday, findMatchingDocuments } = useStore();
   const [scanning, setScanning] = useState(false);
   const [matchedDocs, setMatchedDocs] = useState<Array<{ name: string, content: string }>>([]);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file || !currentUser) return;
+    if (file) {
+      setSelectedFile(file);
+    }
+  };
+
+  const handleScan = () => {
+    if (!selectedFile || !currentUser) return;
 
     if (currentUser.scansToday >= 20 || currentUser.credits <= 0) {
       alert('No more scans available today or insufficient credits');
@@ -19,30 +26,28 @@ const Scanner: React.FC = () => {
 
     setScanning(true);
     const reader = new FileReader();
-    
+
     reader.onload = (e) => {
       const content = e.target?.result as string;
       const wordFrequency = calculateWordFrequency(content);
-      
+
       const document = {
         id: crypto.randomUUID(),
         userId: currentUser.id,
-        name: file.name,
+        name: selectedFile.name,
         content,
         uploadDate: new Date().toISOString(),
         wordFrequency
       };
-      
+
       addDocument(document);
-      
-      // Find matching documents
+
       const matches = findMatchingDocuments(document);
       setMatchedDocs(matches.map(doc => ({
         name: doc.name,
         content: doc.content
       })));
 
-      // Record scan result
       if (matches.length > 0) {
         matches.forEach(match => {
           const similarity = cosineSimilarity(document.wordFrequency, match.wordFrequency);
@@ -59,9 +64,10 @@ const Scanner: React.FC = () => {
 
       incrementScansToday(currentUser.id);
       setScanning(false);
+      setSelectedFile(null);
     };
-    
-    reader.readAsText(file);
+
+    reader.readAsText(selectedFile);
   };
 
   const handleDownload = (content: string, filename: string) => {
@@ -82,30 +88,29 @@ const Scanner: React.FC = () => {
         <h2 className="text-xl font-semibold mb-4">Document Scanner</h2>
         <div className="space-y-4">
           <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
-            {scanning ? (
-              <div className="flex items-center space-x-2">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-                <span className="text-sm text-gray-500">Scanning...</span>
-              </div>
-            ) : (
-              <>
-                <Upload className="w-8 h-8 text-gray-400" />
-                <span className="mt-2 text-sm text-gray-500">Upload .txt file to scan</span>
-                <input
-                  type="file"
-                  className="hidden"
-                  accept=".txt"
-                  onChange={handleFileUpload}
-                />
-              </>
-            )}
+            <Upload className="w-8 h-8 text-gray-400" />
+            <span className="mt-2 text-sm text-gray-500">Upload .txt file to scan</span>
+            <input
+              type="file"
+              className="hidden"
+              accept=".txt"
+              onChange={handleFileUpload}
+            />
           </label>
 
-          {currentUser && (
-            <div className="text-sm text-gray-600 text-center">
-              Credits: {currentUser.credits} | Scans today: {currentUser.scansToday}/20
+          {selectedFile && (
+            <div className="text-center">
+              <p className="text-sm text-gray-600 mb-2">Selected File: {selectedFile.name}</p>
+              <button
+                onClick={handleScan}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                disabled={scanning}
+              >
+                {scanning ? 'Scanning...' : 'Submit & Scan'}
+              </button>
             </div>
           )}
+
         </div>
       </div>
 
